@@ -4,6 +4,10 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { createGlobalStyle, styled } from 'styled-components';
 import Main from './components/Main';
+import Details from './components/Details';
+import { Route, Routes } from 'react-router-dom';
+
+
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -40,9 +44,13 @@ const WrapStyle = styled.div`
   flex-direction: column;
   height: 100%;
 `;
+
+
 const App = () => {
+
   const [allProducts, setAllProducts] = useState([]);
-  console.log(allProducts);
+  const [allCategories, setAllCategories] = useState([]);
+
   const getAllProducts = async () => {
     try {
       const res = await fetch('https://fakestoreapi.com/products');
@@ -57,11 +65,29 @@ const App = () => {
     getAllProducts();
   }, []);
 
+  const getAllCategories = async () => {
+    try {
+      const res = await fetch('https://fakestoreapi.com/products/categories');
+      const data = await res.json();
+
+      setAllCategories(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getAllCategories();
+  }, []);  
+
   return (
     <WrapStyle>
       <GlobalStyle />
-      <Header />
-      <Main allProducts={allProducts} />
+      <Header allCategories={allCategories}/>
+      <Routes>
+        <Route exact path='/' element={<Main allProducts={allProducts}/>}/>
+        {allCategories.map((link, i)=>  <Route exact = "true" key= {i} path={link} element={<Main allProducts={allProducts} category={link}/>}/>)}
+        {allProducts.map((item, i)=>  <Route exact = "true" key= {i} path={'/product/' + item.id} element={<Details product={item}/>}/>)}
+      </Routes>
       <Footer />
     </WrapStyle>
   );

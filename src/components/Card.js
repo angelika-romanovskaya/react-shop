@@ -1,6 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
-const CardStyle = styled.li`
+import { NavLink } from 'react-router-dom'
+const CardStyle = styled(NavLink)`
   border: 1px solid #000;
   border-radius: 20px;
   padding: 10px;
@@ -29,11 +30,13 @@ const CardPriceStyle = styled.span`
 `;
 const Card = ({product}) => {
   return (
-    <CardStyle key={product.id}>
+    <li>
+      <CardStyle to= {'/product/' + product.id} key={product.id}>
         <CardTitleStyle tytle={product.title}>{product.title}</CardTitleStyle>
         <CardImgStyle src={product.image} alt={product.title} />
         <CardPriceStyle>{product.price}$</CardPriceStyle>
-    </CardStyle>
+      </CardStyle>
+    </li>
   );
 };
 
