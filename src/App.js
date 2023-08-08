@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { createGlobalStyle, styled } from 'styled-components';
@@ -50,12 +50,12 @@ const App = () => {
 
   const [allProducts, setAllProducts] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  const refProducts = useRef();
   const getAllProducts = async () => {
     try {
       const res = await fetch('https://fakestoreapi.com/products');
       const data = await res.json();
-      setProducts(data);
+      refProducts.current = data;
       setAllProducts(data);
     } catch (error) {
       console.log(error);
@@ -81,11 +81,13 @@ const App = () => {
 
 
   function searchProducts(event){
-    setProducts(allProducts.filter((item) => item.title.includes(event.target.value)));
+    const products = refProducts.current;
+    setAllProducts(products.filter((item) => item.title.includes(event.target.value)));
   }
 
   function filtrProducts(category){
-    setProducts(allProducts.filter((item)=> item.category === category))
+    const products = refProducts.current;
+    setAllProducts(products.filter((item)=> item.category === category))
   }
 
   return (
@@ -94,8 +96,8 @@ const App = () => {
       <Header allCategories={allCategories} searchProducts = {searchProducts} filtrProducts={filtrProducts}/>
       <Routes>
         <Route exact path='/' element={<Main products={allProducts}/>}/>
-        <Route exact path='/search' element={<Main products={products}/>}/>
-        {allCategories.map((link, i)=>  <Route exact = "true" key= {i} path={link} element={<Main products={products}/>}/>)}
+        <Route exact path='/search' element={<Main products={allProducts}/>}/>
+        {allCategories.map((link, i)=>  <Route exact = "true" key= {i} path={link} element={<Main products={allProducts}/>}/>)}
         {allProducts.map((item, i)=>  <Route exact = "true" key= {i} path={'/product/' + item.id} element={<Details product={item}/>}/>)}
       </Routes>
       <Footer />
