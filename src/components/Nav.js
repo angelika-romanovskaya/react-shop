@@ -13,10 +13,10 @@ const LinksStyle = styled(NavLink)`
     text-decoration: none;
 `;
 
-export default function Nav({allCategories}) {
+export default function Nav({allCategories, filtrProducts}) {
   return (
     <NavStyle>
-        {allCategories.map((link, i)=> <li key = {i}><LinksStyle exact = "true" to = {link}>{link}</LinksStyle></li>)}
+        {allCategories.map((link, i)=> <li key = {i}><LinksStyle onClick={() => filtrProducts(link)} exact = "true" to = {link}>{link}</LinksStyle></li>)}
     </NavStyle>
   )
 }

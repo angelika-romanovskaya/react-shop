@@ -50,12 +50,12 @@ const App = () => {
 
   const [allProducts, setAllProducts] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
-
+  const [products, setProducts] = useState([]);
   const getAllProducts = async () => {
     try {
       const res = await fetch('https://fakestoreapi.com/products');
       const data = await res.json();
-
+      setProducts(data);
       setAllProducts(data);
     } catch (error) {
       console.log(error);
@@ -69,23 +69,33 @@ const App = () => {
     try {
       const res = await fetch('https://fakestoreapi.com/products/categories');
       const data = await res.json();
-
       setAllCategories(data);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getAllCategories();
-  }, []);  
+  }, []);
+
+
+  function searchProducts(event){
+    setProducts(allProducts.filter((item) => item.title.includes(event.target.value)));
+  }
+
+  function filtrProducts(category){
+    setProducts(allProducts.filter((item)=> item.category === category))
+  }
 
   return (
     <WrapStyle>
       <GlobalStyle />
-      <Header allCategories={allCategories}/>
+      <Header allCategories={allCategories} searchProducts = {searchProducts} filtrProducts={filtrProducts}/>
       <Routes>
-        <Route exact path='/' element={<Main allProducts={allProducts}/>}/>
-        {allCategories.map((link, i)=>  <Route exact = "true" key= {i} path={link} element={<Main allProducts={allProducts} category={link}/>}/>)}
+        <Route exact path='/' element={<Main products={allProducts}/>}/>
+        <Route exact path='/search' element={<Main products={products}/>}/>
+        {allCategories.map((link, i)=>  <Route exact = "true" key= {i} path={link} element={<Main products={products}/>}/>)}
         {allProducts.map((item, i)=>  <Route exact = "true" key= {i} path={'/product/' + item.id} element={<Details product={item}/>}/>)}
       </Routes>
       <Footer />

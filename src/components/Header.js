@@ -44,9 +44,7 @@ const CartStyle = styled.button`
   background: none;
   border: none;
 `;
-const Header = ({allCategories}) => {
-
-
+const Header = ({allCategories, searchProducts, filtrProducts}) => {
 
   return (
     <HeaderStyle>
@@ -67,9 +65,11 @@ const Header = ({allCategories}) => {
             </LogoStyle>
           </NavLink>
 
-          {/* <input onKeyUp={() => searchProducts()} type='search'/> */}
-
-          <Nav allCategories = {allCategories}/>
+        <NavLink to='/search'>
+          <input onKeyUp={(event) => searchProducts(event)} type='search'/>
+        </NavLink>
+          
+          <Nav allCategories = {allCategories} filtrProducts = {filtrProducts}/>
           <CartStyle>
             <svg
               xmlns='http://www.w3.org/2000/svg'
